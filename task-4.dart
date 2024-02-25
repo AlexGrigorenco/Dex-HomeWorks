@@ -1,41 +1,51 @@
-// Можно использовать шаблон проектирования "Фасад" (Facade):
+// Можно использовать шаблон проектирования "Стартегия"
 
-// Упрощение интерфейса: Фасад позволяет предоставить упрощенный интерфейс к сложной системе. В случае с авторизацией, фасад может скрыть сложную логику проверки подлинности, обработки сеансов и управления доступом.
+// Интерфейс стратегии аутентификации
+abstract class AuthStrategy {
+  bool authenticate(String username, String password);
+}
 
-// Изоляция деталей реализации: Фасад позволяет изолировать клиентский код от деталей реализации авторизации. Это делает код более чистым и уменьшает зависимость клиента от конкретной реализации авторизации.
-
-// Управление различными способами авторизации: Фасад может обеспечить единый интерфейс для работы с различными способами авторизации, такими как логин/пароль, OAuth и другими.
-
-// Фасад для работы с авторизацией
-class AuthFacade {
-  bool isAuthenticated = false;
-
-  // Метод для аутентификации пользователя
-  void authenticate(String username, String password) {
-    // Реализация аутентификации
-    isAuthenticated = (username == 'admin' && password == 'password');
+// Конкретная стратегия для аутентификации по логину и паролю
+class LoginPasswordAuth implements AuthStrategy {
+  @override
+  bool authenticate(String username, String password) {
+    return (username == 'admin' && password == 'password');
   }
+}
 
-  // Метод для проверки авторизации пользователя
-  bool checkAuthentication() {
-    return isAuthenticated;
+// Конкретная стратегия для аутентификации через Google
+class GoogleAuth implements AuthStrategy {
+  @override
+  bool authenticate(String username, String password) {
+    // Здесь было бы подключение к сервису Google для аутентификации
+    return true; // Вернем true для примера
   }
+}
 
-  // Метод для выхода пользователя из системы
-  void signOut() {
-    isAuthenticated = false;
+// Конкретная стратегия для аутентификации через Facebook
+class FacebookAuth implements AuthStrategy {
+  @override
+  bool authenticate(String username, String password) {
+    // Здесь было бы подключение к сервису Facebook для аутентификации
+    return true; // Вернем true для примера
   }
 }
 
 void main() {
-  AuthFacade authFacade = AuthFacade();
+  // Использование стратегий для различных видов аутентификации
+  AuthStrategy loginPasswordStrategy = LoginPasswordAuth();
+  AuthStrategy googleAuthStrategy = GoogleAuth();
+  AuthStrategy facebookAuthStrategy = FacebookAuth();
 
-  authFacade.authenticate('admin', 'password');
-  print('Is authenticated: ${authFacade.checkAuthentication()}');
+  // Попытка аутентификации по логину и паролю
+  print('Login with username and password:');
+  print(loginPasswordStrategy.authenticate('admin', 'password')); // true
 
-  authFacade.signOut();
-  print('Is authenticated: ${authFacade.checkAuthentication()}');
+  // Попытка аутентификации через Google
+  print('\nLogin with Google:');
+  print(googleAuthStrategy.authenticate('user@gmail.com', 'googlepassword')); // true
 
-  authFacade.authenticate('qwerty', 'password');
-  print('Is authenticated: ${authFacade.checkAuthentication()}');
+  // Попытка аутентификации через Facebook
+  print('\nLogin with Facebook:');
+  print(facebookAuthStrategy.authenticate('user@example.com', 'facebookpassword')); // true
 }
