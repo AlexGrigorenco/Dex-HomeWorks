@@ -6,6 +6,10 @@
 
 // Легкость добавления новых форматов: Добавление новых форматов документов в систему становится проще, так как для этого нужно лишь создать новый класс-продукт и добавить его обработку в фабрику.
 
+
+// Перечисление для типов документов
+enum DocumentType { pdf, html, json }
+
 // Абстрактный класс документа
 abstract class Document {
   void save(String path);
@@ -40,16 +44,14 @@ class JSONDocument implements Document {
 
 // Фабрика для создания документов
 class DocumentFactory {
-  Document createDocument(String format) {
-    switch (format.toLowerCase()) {
-      case 'pdf':
+  Document createDocument(DocumentType type) {
+    switch (type) {
+      case DocumentType.pdf:
         return PDFDocument();
-      case 'html':
+      case DocumentType.html:
         return HTMLDocument();
-      case 'json':
+      case DocumentType.json:
         return JSONDocument();
-      default:
-        throw Exception('Unsupported document format: $format');
     }
   }
 }
@@ -58,14 +60,14 @@ void main() {
   DocumentFactory factory = DocumentFactory();
 
   // Создание PDF документа
-  Document pdfDocument = factory.createDocument('pdf');
+  Document pdfDocument = factory.createDocument(DocumentType.pdf);
   pdfDocument.save('example.pdf');
 
   // Создание HTML документа
-  Document htmlDocument = factory.createDocument('html');
+  Document htmlDocument = factory.createDocument(DocumentType.html);
   htmlDocument.save('example.html');
 
   // Создание JSON документа
-  Document jsonDocument = factory.createDocument('JSON');
+  Document jsonDocument = factory.createDocument(DocumentType.json);
   jsonDocument.save('example.json');
 }
